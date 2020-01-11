@@ -7,7 +7,17 @@ var logger = require('morgan');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
+var net = require('net');
+
 var app = express();
+
+// Setup Malware classifier client
+
+app.locals.client = new net.Socket();
+app.locals.client.connect(3030, '127.0.0.1', function() {
+	console.log('Connected');
+});
+
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
