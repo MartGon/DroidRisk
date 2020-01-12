@@ -1,0 +1,8 @@
+extends layout
+
+block content
+  h1= title
+  p Welcome to #{title}
+  form(action="/apk" method="post" enctype="multipart/form-data")
+    input(type='file' name='apk')
+    input(type='submit')
