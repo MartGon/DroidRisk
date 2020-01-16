@@ -18,23 +18,35 @@ router.get('/', function(req, res, next)
 
 router.post('/apk', (req, res, next) => {
 
-  let app = req.app
-  let upload = multer({ storage: app.locals.storage }).single('apk');
+    console.log("In")
+    let app = req.app
+    let upload = multer({ storage: app.locals.storage }).single('apk');
 
-  app.locals.client.once('data', function(data, err) {
-    res.render('index', { title: data });
-  });
+    upload(req, res, function(err){
+      console.log(err)
+      if(req.file)
+      {
+        app.locals.client.once('data', function(data, err) {
+          console.log('response')
+          console.log(data.toString())
+          res.setHeader("Content-type", "application/JSON")
+          res.send(data);
+        });
+        console.log(req.file.path)
 
-  upload(req, res, function(err){
-    console.log(req.file.path)
+        if(err)
+          return res.send(err)
 
-    if(err)
-      return res.send(err)
-
-    let query = '{"path" :"' + req.file.path + '"}'
-    console.log(query)
-    app.locals.client.write(query);
+        let query = '{"path" :"' + req.file.path + '"}'
+        console.log(query)
+        app.locals.client.write(query);
+      }
+      else
+      {
+        console.log("Else")
+        res.render('index', { title:"Upload a File"})
+      }
+    })
   })
-})
 
 module.exports = router;
